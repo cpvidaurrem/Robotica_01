@@ -35,7 +35,8 @@ Este proyecto permite controlar un foco, un LED, y un motor paso a paso a travé
 [LED Azul]       → Pin 6  
 [Relé 220V]      → Pin 7  
 [Motor DRV8825]  → Step=8, Dir=9, Enable=10  
-[Ethernet W5100] → Conectado por SPI
+[Ethernet W5100] → Conectado por SPI 
+```
 
 
 ## 🔹 1. Conexión del LED Azul
@@ -122,6 +123,7 @@ El sensor se inicializa en el código con la librería `DHT.h`, usando:
 #define DHTPIN 2
 #define DHTTYPE DHT11
 DHT dht(DHTPIN, DHTTYPE);
+```
 
 
 ## 🔹 4. Conexión del Motor Paso a Paso con DRV8825
@@ -174,4 +176,4 @@ void moverMotor(float angle) {
 
   digitalWrite(enablePin, HIGH);
 }
-
+```
