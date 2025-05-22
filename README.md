@@ -15,7 +15,7 @@ Este proyecto permite controlar un foco, un LED, y un motor paso a paso a travé
 - Módulo Relé 5V
 - LED Azul
 - Resistencia 220Ω
-- Motor paso a paso (28BYJ-48 o NEMA 17)
+- Motor paso a paso (28BYJ-48 o NEMA 23)
 - Driver DRV8825
 - Fuente de alimentación externa (para el motor)
 
@@ -25,6 +25,7 @@ Este proyecto permite controlar un foco, un LED, y un motor paso a paso a travé
   - `Ethernet.h`
   - `SPI.h`
   - `DHT.h`
+  - `ArduinoJson.h`
 
 ---
 
@@ -129,7 +130,7 @@ DHT dht(DHTPIN, DHTTYPE);
 ## 🔹 4. Conexión del Motor Paso a Paso con DRV8825
 
 ### 🧩 Componentes necesarios:
-- 1 x Motor paso a paso (por ejemplo: NEMA 17)
+- 1 x Motor paso a paso (por ejemplo: NEMA 23)
 - 1 x Driver DRV8825
 - 1 x Protoboard
 - Cables dupont
