@@ -56,7 +56,7 @@ Este proyecto permite controlar un foco, un LED, y un motor paso a paso a travé
 > ⚠️ **Importante**: La resistencia es necesaria para evitar quemar el LED. Conéctala entre el cátodo del LED y tierra (GND).
 
 ### 🔌 Esquema Fritzing:
-![Esquema LED](imagenes/led_fritzing.png)
+![Esquema LED](img/Esquema_Fritzing_led.png)
 
 ### 💡 Funcionamiento:
 El LED se controla desde el navegador web. Al acceder a las rutas:
