@@ -89,7 +89,7 @@ Esto se logra gracias a la interfaz web servida por el módulo Ethernet W5100.
 > ⚠️ **Precaución**: Este montaje trabaja con corriente alterna. Asegúrate de desconectar la energía antes de conectar el relé al foco y utiliza cinta aislante o terminales seguros. Si no estás familiarizado con electricidad domiciliaria, busca ayuda de un técnico.
 
 ### 🔌 Esquema Fritzing:
-![Esquema Relé](imagenes/rele_fritzing.png)
+![Esquema Relé](img/Esquema_Fritzing_foco_rele.png)
 
 ### 💡 Funcionamiento:
 Desde el navegador puedes encender y apagar el foco con estas rutas:
@@ -115,7 +115,7 @@ El pin 7 del Arduino controla el pin IN del relé. Cuando se activa (`LOW` en re
 > 🔧 **Nota**: Puedes colocar una resistencia de **10kΩ** entre VCC y DATA como resistencia de pull-up para una mejor estabilidad de la señal.
 
 ### 🔌 Esquema Fritzing:
-![Esquema DHT11](imagenes/dht11_fritzing.png)
+![Esquema DHT11](img/Esquema_Fritzing_sensor_temp_hum.png)
 
 ### 🌡️ Funcionamiento:
 El sensor se inicializa en el código con la librería `DHT.h`, usando:
