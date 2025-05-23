@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Arduino</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #2ecc71;
+            --secondary-dark: #27ae60;
+            --danger-color: #e74c3c;
+            --danger-dark: #c0392b;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-color: #f5f5f5;
+            --card-bg: white;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 10px;
+            --transition: all 0.3s ease;
+        }
+
+        /* Modo oscuro */
+        body.dark-mode {
+            --primary-color: #4dabf5;
+            --primary-dark: #3a8fd0;
+            --secondary-color: #4cd787;
+            --secondary-dark: #35b557;
+            --danger-color: #e77f73;
+            --danger-dark: #d55448;
+            --text-color: #ecf0f1;
+            --text-light: #bdc3c7;
+            --bg-color: #2c3e50;
+            --card-bg: #34495e;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            position: relative;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(127, 140, 141, 0.2);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            padding: 8px 10px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            transform: scale(1.1);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            border: 1px solid rgba(127, 140, 141, 0.1);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(127, 140, 141, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .card-icon {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: 500;
+            font-size: 1.5rem;
+        }
+
+        .sensor-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-color);
+            text-align: center;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sensor-unit {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-left: 5px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background-color: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-on {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-on:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        .btn-off {
+            background-color: var(--danger-color);
+        }
+
+        .btn-off:hover {
+            background-color: var(--danger-dark);
+        }
+
+        .btn-reset {
+            background-color: var(--text-light);
+        }
+
+        .btn-reset:hover {
+            background-color: #636e72;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+            color: var(--text-light);
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 5px;
+            margin: 20px 0;
+            display: none;
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.online {
+            background-color: var(--secondary-color);
+            box-shadow: 0 0 10px var(--secondary-color);
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.offline {
+            background-color: var(--danger-color);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+            }
+        }
+
+        /* Estilos para el control deslizante del motor */
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            outline: none;
+            margin: 10px 0;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .slider::-moz-range-thumb:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .motor-value {
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .motor-position {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+        }
+
+        .motor-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .motor-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 90px;
+            height: 4px;
+            background-color: var(--primary-color);
+            transform-origin: left center;
+            transform: translateY(-50%) rotate(0deg);
+            transition: transform 0.5s ease-out;
+        }
+
+        .motor-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .motor-degrees {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform-origin: center;
+        }
+
+        .motor-degree-mark {
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            width: 2px;
+            height: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            transform-origin: bottom center;
+        }
+
+        .motor-degree-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .input-group button {
+            margin-left: 10px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .motor-position {
+                width: 150px;
+                height: 150px;
+            }
+
+            .motor-indicator {
+                width: 65px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .card h2 {
+                font-size: 1.3rem;
+            }
+
+            .sensor-value {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-microchip"></i> Panel de Control Arduino</h1>
+            <button id="themeToggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i> No se puede conectar con el Arduino. Verificando conexión...
+        </div>
+
+        <div class="connection-status">
+            <span class="status-indicator" id="connectionStatus"></span>
+            <span id="statusText">Verificando conexión...</span>
+        </div>
+
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-temperature-high card-icon"></i>
+                    <h2>Temperatura</h2>
+                </div>
+                <div class="sensor-value" id="temperatura">--<span class="sensor-unit">°C</span></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-tint card-icon"></i>
+                    <h2>Humedad</h2>
+                </div>
+                <div class="sensor-value" id="humedad">--<span class="sensor-unit">%</span></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-lightbulb card-icon"></i>
+                <h2>Control de LED</h2>
+            </div>
+            <div class="controls">
+                <button id="btnOn" class="btn-on"><i class="fas fa-power-off"></i> Encender</button>
+                <button id="btnOff" class="btn-off"><i class="fas fa-power-off"></i> Apagar</button>
+            </div>
+            <div class="status" id="ledStatus">Estado: Desconocido</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-lightbulb card-icon"></i>
+                <h2>Control de Foco</h2>
+            </div>
+            <div class="controls">
+                <button id="focobtnOn" class="btn-on"><i class="fas fa-power-off"></i> Encender</button>
+                <button id="focobtnOff" class="btn-off"><i class="fas fa-power-off"></i> Apagar</button>
+            </div>
+            <div class="status" id="focobtnStatus">Estado: Desconocido</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-lightbulb card-icon"></i>
+                <h2>Control de Ambos</h2>
+            </div>
+            <div class="controls">
+                <button id="ambosOn" class="btn-on"><i class="fas fa-power-off"></i> Encender</button>
+                <button id="ambosOff" class="btn-off"><i class="fas fa-power-off"></i> Apagar</button>
+            </div>
+        </div>
+
+        <!-- Nuevo control para el motor paso a paso -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-cog card-icon"></i>
+                <h2>Control de Motor Paso a Paso</h2>
+            </div>
+            <div class="motor-position">
+                <div class="motor-circle">
+                    <div class="motor-indicator" id="motorIndicator"></div>
+                    <div class="motor-center"></div>
+                    <!-- Las marcas se generarán con JavaScript -->
+                </div>
+            </div>
+            <div class="motor-value" id="motorValue">0°</div>
+            <div class="slider-container">
+                <input type="range" min="0" max="360" value="0" class="slider" id="motorSlider">
+            </div>
+            <div class="input-group">
+                <input type="number" id="motorInput" min="0" max="360" value="0" placeholder="Grados (0-360)">
+                <button id="motorSetBtn"><i class="fas fa-play"></i> Establecer</button>
+            </div>
+            <div class="controls">
+                <button id="motorResetBtn" class="btn-reset"><i class="fas fa-undo"></i> Reiniciar (0°)</button>
+            </div>
+            <div class="status" id="motorStatus">Estado: Esperando comando</div>
+        </div>
+
+        <div class="footer">
+            <p>Panel de Control Arduino © 2025 | Última actualización: <span id="lastUpdate">--</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        const errorMessage = document.getElementById('errorMessage');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const statusText = document.getElementById('statusText');
+        const temperaturaElement = document.getElementById('temperatura');
+        const humedadElement = document.getElementById('humedad');
+        const btnOn = document.getElementById('btnOn');
+        const btnOff = document.getElementById('btnOff');
+        const ledStatus = document.getElementById('ledStatus');
+        const focobtnOff = document.getElementById('focobtnOff');
+        const focobtnOn = document.getElementById('focobtnOn');
+        const focobtnStatus = document.getElementById('focobtnStatus');
+        const ambosOn = document.getElementById('ambosOn');
+        const ambosOff = document.getElementById('ambosOff');
+        const lastUpdate = document.getElementById('lastUpdate');
+        const themeToggle = document.getElementById('themeToggle');
+
+        // Función para alternar el tema oscuro/claro
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+
+            // Guardar preferencia en localStorage
+            localStorage.setItem('darkMode', isDarkMode);
+        });
+
+        // Cargar preferencia de tema
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        // Función para formatear los valores de los sensores
+        function formatSensorValue(value, defaultValue = '--') {
+            return value !== undefined && value !== null ? value : defaultValue;
+        }
+
+        // Función para actualizar la interfaz con los datos de los sensores
+        function updateSensorData(data) {
+            temperaturaElement.innerHTML = `${formatSensorValue(data.temperatura)}<span class="sensor-unit">°C</span>`;
+            humedadElement.innerHTML = `${formatSensorValue(data.humedad)}<span class="sensor-unit">%</span>`;
+        }
+
+        // Función para actualizar el estado de conexión
+        function updateConnectionStatus(connected) {
+            isConnected = connected;
+
+            if (connected) {
+                connectionStatus.className = 'status-indicator online';
+                statusText.textContent = 'Conectado';
+                errorMessage.style.display = 'none';
+            } else {
+                connectionStatus.className = 'status-indicator offline';
+                statusText.textContent = 'Desconectado';
+                errorMessage.style.display = 'block';
+            }
+
+            // Actualizar hora de la última actualización
+            const now = new Date();
+            lastUpdate.textContent = now.toLocaleTimeString();
+        }
+
+        // Función para actualizar el estado del LED
+        function updateLedStatus(status) {
+            if (status.estado) {
+                ledStatus.textContent = 'Estado: Encendido';
+                btnOn.disabled = true;
+                btnOff.disabled = false;
+            } else {
+                ledStatus.textContent = 'Estado: Apagado';
+                btnOn.disabled = false;
+                btnOff.disabled = true;
+            }
+        }
+
+        // Función para actualizar el estado del foco
+        function updateFocoStatus(status) {
+            if (status.estado) {
+                focobtnStatus.textContent = 'Estado: Encendido';
+                focobtnOn.disabled = true;
+                focobtnOff.disabled = false;
+            } else {
+                focobtnStatus.textContent = 'Estado: Apagado';
+                focobtnOn.disabled = false;
+                focobtnOff.disabled = true;
+            }
+        }
+        // Función para obtener datos de los sensores
+        async function fetchSensorData() {
+            try {
+                const response = await fetch('/api/sensores');
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
+                const data = await response.json();
+                updateSensorData(data);
+                updateConnectionStatus(true);
+
+                return true;
+            } catch (error) {
+                console.error('Error al obtener datos de sensores:', error);
+                updateConnectionStatus(false);
+
+                return false;
+            }
+        }
+
+        // Función para obtener el estado del LED
+        async function fetchLedStatus() {
+            try {
+                const response = await fetch('/api/led');
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
+                const data = await response.json();
+                updateLedStatus(data);
+
+                return true;
+            } catch (error) {
+                console.error('Error al obtener estado del LED:', error);
+                return false;
+            }
+        }
+
+        // Función para obtener el estado del foco
+        async function fetchFocoStatus() {
+            try {
+                const response = await fetch('/api/foco');
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
+                const data = await response.json();
+                updateFocoStatus(data);
+
+                return true;
+            } catch (error) {
+                console.error('Error al obtener estado del foco:', error);
+                return false;
+            }
+        }
+        // Función para controlar el LED
+        async function controlLed(encender) {
+            try {
+                const url = encender ? '/api/led/on' : '/api/led/off';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
+                const data = await response.json();
+                updateLedStatus(data);
+
+                return true;
+            } catch (error) {
+                console.error(`Error al ${encender ? 'encender' : 'apagar'} el LED:`, error);
+                return false;
+            }
+        }
+
+        // Función para controlar el foco
+        async function controlFoco(encender) {
+            try {
+                const url = encender ? '/api/foco/on' : '/api/foco/off';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
+                const data = await response.json();
+                updateFocoStatus(data);
+
+                return true;
+            } catch (error) {
+                console.error(`Error al ${encender ? 'encender' : 'apagar'} el foco:`, error);
+                return false;
+            }
+        }
+
+        // Función para controlar ambos
+        async function controlAmbos(encender) {
+            try {
+                const url = encender ? '/api/ambos/on' : '/api/ambos/off';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
+                return true;
+            } catch (error) {
+                console.error(`Error al ${encender ? 'encender' : 'apagar'} ambos:`, error);
+                return false;
+            }
+        }
+        // Variables para el motor
+        const motorSlider = document.getElementById('motorSlider');
+        const motorInput = document.getElementById('motorInput');
+        const motorSetBtn = document.getElementById('motorSetBtn');
+        const motorValue = document.getElementById('motorValue');
+        const motorIndicator = document.getElementById('motorIndicator');
+        const motorStatus = document.getElementById('motorStatus');
+
+        let isConnected = false;
+        let currentMotorSteps = 0;
+
+        // Conversión: 200 pasos = 360 grados (1 vuelta completa)
+        const PASOS_POR_VUELTA = 200;
+
+        // Función para convertir pasos a grados
+        function pasosAGrados(pasos) {
+            return (pasos * 360) / PASOS_POR_VUELTA;
+        }
+
+        // Función para convertir grados a pasos
+        function gradosAPasos(grados) {
+            return Math.round((grados * PASOS_POR_VUELTA) / 360);
+        }
+
+        // Crear marcas de grados para el indicador del motor
+        function createDegreeMarkers() {
+            const motorCircle = document.querySelector('.motor-circle');
+
+            // Crear marcas cada 30 grados
+            for (let i = 0; i <= 360; i += 30) {
+                const marker = document.createElement('div');
+                marker.className = 'motor-degree-mark';
+                marker.style.transform = `rotate(${i}deg) translateX(-50%)`;
+
+                // Añadir etiquetas en incrementos de 90 grados
+                if (i % 90 === 0) {
+                    const label = document.createElement('div');
+                    label.className = 'motor-degree-label';
+                    // Mostrar tanto grados como pasos equivalentes
+                    const pasosEquivalentes = gradosAPasos(i);
+                    label.textContent = `${i}° (${pasosEquivalentes}p)`;
+                    label.style.transform = `rotate(${i}deg) translateX(-50%)`;
+                    motorCircle.appendChild(label);
+
+                    marker.style.height = '15px';
+                    marker.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+                }
+
+                motorCircle.appendChild(marker);
+            }
+        }
+
+        // Función para actualizar el indicador del motor
+        function updateMotorIndicator(pasos) {
+            const grados = pasosAGrados(pasos);
+            motorIndicator.style.transform = `translateY(-50%) rotate(${grados}deg)`;
+            motorValue.textContent = `${pasos} pasos (${Math.round(grados)}°)`;
+        }
+
+        // Función para sincronizar los controles del motor
+        function syncMotorControls(pasos) {
+            const grados = pasosAGrados(pasos);
+            motorSlider.value = grados;
+            motorInput.value = pasos;
+            updateMotorIndicator(pasos);
+            currentMotorSteps = pasos;
+        }
+
+        // Función para mover el motor por pasos
+        async function moverMotorPasos(pasosObjetivo) {
+            const pasosDiferencia = pasosObjetivo - currentMotorSteps;
+
+            if (pasosDiferencia === 0) {
+                motorStatus.textContent = `Estado: Motor ya está en ${pasosObjetivo} pasos`;
+                return true;
+            }
+
+            const direccion = pasosDiferencia > 0 ? "horario" : "antihorario";
+            const pasosAMover = Math.abs(pasosDiferencia);
+
+            motorStatus.textContent = `Estado: Moviendo ${pasosAMover} pasos ${direccion}...`;
+
+            try {
+                const response = await fetch('/motor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        pasos: pasosAMover,
+                        direccion: direccion
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
+                const data = await response.json();
+
+                // Actualizar posición local y estado
+                syncMotorControls(pasosObjetivo);
+                motorStatus.textContent = `Estado: ${data.mensaje || 'Motor movido exitosamente'}`;
+
+                return true;
+            } catch (error) {
+                console.error(`Error al mover el motor:`, error);
+                motorStatus.textContent = `Error: No se pudo mover el motor`;
+                return false;
+            }
+        }
+
+        // Función para probar la conexión con el Arduino
+        async function probarConexion() {
+            try {
+                const response = await fetch('/test');
+                if (response.ok) {
+                    const data = await response.json();
+                    motorStatus.textContent = `Estado: ${data.mensaje || 'Conectado'}`;
+                    isConnected = true;
+                    return true;
+                }
+            } catch (error) {
+                console.error('Error de conexión:', error);
+                motorStatus.textContent = 'Error: No se puede conectar al Arduino';
+                isConnected = false;
+                return false;
+            }
+        }
+
+        // Función para mover motor a posición absoluta
+        async function moverMotorAbsoluto(pasosObjetivo) {
+            // Validar rango
+            if (pasosObjetivo < 0) pasosObjetivo = 0;
+            if (pasosObjetivo > PASOS_POR_VUELTA) pasosObjetivo = PASOS_POR_VUELTA;
+
+            await moverMotorPasos(pasosObjetivo);
+        }
+
+        // Eventos para el motor
+        motorSlider.addEventListener('input', (e) => {
+            const grados = parseInt(e.target.value);
+            const pasos = gradosAPasos(grados);
+            motorInput.value = pasos;
+            updateMotorIndicator(pasos);
+        });
+
+        motorSlider.addEventListener('change', (e) => {
+            const grados = parseInt(e.target.value);
+            const pasos = gradosAPasos(grados);
+            moverMotorAbsoluto(pasos);
+        });
+
+        motorInput.addEventListener('input', (e) => {
+            let pasos = parseInt(e.target.value);
+            if (isNaN(pasos)) {
+                pasos = 0;
+            } else if (pasos < 0) {
+                pasos = 0;
+            } else if (pasos > PASOS_POR_VUELTA) {
+                pasos = PASOS_POR_VUELTA;
+            }
+
+            updateMotorIndicator(pasos);
+
+            // Actualizar el slider también
+            const grados = pasosAGrados(pasos);
+            motorSlider.value = grados;
+        });
+
+        motorSetBtn.addEventListener('click', () => {
+            const pasos = parseInt(motorInput.value) || 0;
+            moverMotorAbsoluto(pasos);
+        });
+
+        // Configuración de eventos
+        btnOn.addEventListener('click', () => controlLed(true));
+        btnOff.addEventListener('click', () => controlLed(false));
+        focobtnOn.addEventListener('click', () => controlFoco(true));
+        focobtnOff.addEventListener('click', () => controlFoco(false));
+        ambosOn.addEventListener('click', () => controlAmbos(true));
+        ambosOff.addEventListener('click', () => controlAmbos(false));
+
+
+        // Función para actualizar todos los datos
+        async function updateAllData() {
+            const sensorSuccess = await fetchSensorData();
+
+            if (sensorSuccess) {
+                await fetchLedStatus();
+                await fetchFocoStatus();
+            }
+        }
+
+        // Inicializar la página y configurar la actualización periódica
+        async function init() {
+            createDegreeMarkers();
+            await updateAllData();
+
+            // Actualizar datos cada 5 segundos
+            setInterval(updateAllData, 5000);
+        }
+
+        // Iniciar la aplicación
+        init();
+    </script>
+</body>
+
+</html>
