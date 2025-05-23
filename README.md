@@ -178,3 +178,261 @@ void moverMotor(float angle) {
   digitalWrite(enablePin, HIGH);
 }
 ```
+# Sistema de Control Arduino con API REST
+
+Este proyecto implementa un sistema de monitoreo y control de sensores usando Arduino como servidor de API REST, con una interfaz web moderna desarrollada en Node.js.
+
+## 📋 Descripción General
+
+El sistema está dividido en tres componentes principales:
+
+- **Arduino como Servidor API**: Funciona como un servidor web minimalista que expone endpoints REST para leer sensores y controlar actuadores.
+- **Servidor Node.js**: Actúa como intermediario entre el Arduino y el cliente web, proporcionando una capa de abstracción.
+- **Interfaz Web**: Frontend moderno y responsivo que consume la API y presenta los datos en tiempo real.
+
+## 🏗️ Arquitectura del Sistema
+
+```
+┌─────────────────┐    HTTP/REST    ┌─────────────────┐    HTTP/REST    ┌─────────────────┐
+│                 │ <-------------> │                 │ <-------------> │                 │
+│  Interfaz Web   │                 │ Servidor Node.js│                 │ Arduino Uno +   │
+│  (Frontend)     │                 │   (Proxy)       │                 │ Ethernet Shield │
+│                 │                 │                 │                 │                 │
+└─────────────────┘                 └─────────────────┘                 └─────────────────┘
+     Puerto 3000                         Puerto 3000                      IP: 192.168.10.31
+```
+
+### Flujo de Datos
+
+1. **Actualización Automática**: Cada 5 segundos, la interfaz web solicita datos actualizados.
+2. **Proxy Inteligente**: Node.js recibe la solicitud y la reenvía al Arduino.
+3. **Respuesta JSON**: Arduino responde con datos de sensores en formato JSON liviano.
+4. **Presentación Visual**: La interfaz actualiza los valores mostrados al usuario.
+5. **Control de Dispositivos**: Los comandos de control se envían de forma similar pero inversa.
+
+## 🔧 Componentes del Hardware
+
+- Arduino Uno + Ethernet Shield
+- **Sensor DHT11**: Conectado al pin digital 8 para lectura de temperatura.
+- **Sensor de Humedad Analógico**: Conectado al pin A0.
+- **LED de Control**: Conectado al pin digital 6.
+- **Ethernet Shield**: Para conectividad de red.
+
+### Configuración de Red
+
+- Dirección MAC: `{0xDE, 0xAD, 0xBE, 0xEF, 0xAB, 0xCA}`
+- Dirección IP: `192.168.10.31`
+- Puerto: `80` (HTTP estándar)
+
+## 🚀 API REST del Arduino
+
+El Arduino implementa un servidor HTTP minimalista que expone los siguientes endpoints:
+
+| Método | Endpoint       | Descripción                      | Respuesta                        |
+|--------|----------------|----------------------------------|----------------------------------|
+| GET    | /api/sensores  | Obtiene datos de todos los sensores | `{"temperatura": 25, "humedad": 60}` |
+| GET    | /api/led       | Consulta el estado actual del LED | `{"estado": true}`              |
+| POST   | /api/led/on    | Enciende el LED                   | `{"estado": true}`              |
+| POST   | /api/led/off   | Apaga el LED                      | `{"estado": false}`             |
+
+### Ejemplo de Comunicación
+
+```
+GET /api/sensores HTTP/1.1
+Host: 192.168.10.31
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+Access-Control-Allow-Origin: *
+Connection: close
+
+{"temperatura":23.5,"humedad":65}
+```
+
+## 🖥️ Servidor Node.js (Proxy)
+
+El servidor Node.js actúa como intermediario y proporciona las siguientes funcionalidades:
+
+### Funciones Principales
+
+- Proxy HTTP
+- Manejo de Errores
+- Servicio de Archivos
+- CORS
+
+### Configuración del Servidor
+
+```javascript
+const ARDUINO_IP = '192.168.10.31';
+const ARDUINO_URL = `http://${ARDUINO_IP}`;
+const port = 3000;
+```
+
+## 🎨 Interfaz Web
+
+### Características Principales
+
+- Actualización Automática
+- Diseño Responsivo
+- Indicadores Visuales
+- Controles Interactivos
+
+### Ciclo de Actualización
+
+```javascript
+setInterval(updateAllData, 5000);
+
+async function updateAllData() {
+    const sensorSuccess = await fetchSensorData();
+    if (sensorSuccess) {
+        await fetchLedStatus();
+    }
+}
+```
+
+### Estados de la Interfaz
+
+| Estado       | Indicador Visual | Descripción                       |
+|--------------|------------------|-----------------------------------|
+| Conectado    | 🟢 Verde          | Comunicación exitosa con Arduino |
+| Desconectado | 🔴 Rojo           | Sin comunicación con Arduino     |
+| Cargando     | ⚪ Gris           | Procesando solicitud             |
+
+## 📦 Instalación y Configuración
+
+### Requisitos Previos
+
+- Arduino IDE
+- Node.js (versión 14 o superior)
+- Arduino Uno + Ethernet Shield
+- Sensor DHT11
+- Sensor de humedad analógico
+
+### Instalación paso a paso
+
+#### 1. Configuración del Arduino
+
+```bash
+# Instalar bibliotecas necesarias:
+# - DHT sensor library
+# - ArduinoJson
+# - Ethernet library
+
+# Cargar el código arduino_api.ino al Arduino
+```
+
+#### 2. Configuración del Servidor Node.js
+
+```bash
+mkdir arduino-web-control
+cd arduino-web-control
+npm init -y
+npm install express axios
+mkdir public
+```
+
+#### 3. Ejecución del Sistema
+
+```bash
+node server.js
+```
+
+Accede a: `http://localhost:3000`
+
+## 🔄 Flujo de Funcionamiento Detallado
+
+### 1. Inicialización del Sistema
+
+```mermaid
+sequenceDiagram
+    participant U as Usuario
+    participant W as Interfaz Web
+    participant N as Node.js Server
+    participant A as Arduino
+
+    U->>W: Abre navegador
+    W->>N: GET /
+    N->>W: Sirve index.html
+    W->>W: Ejecuta init()
+    W->>N: GET /api/sensores
+    N->>A: GET /api/sensores
+    A->>N: JSON con datos
+    N->>W: JSON con datos
+    W->>W: Actualiza interfaz
+```
+
+### 2. Actualización Periódica
+
+```mermaid
+sequenceDiagram
+    loop Cada 5 segundos
+        W->>N: GET /api/sensores
+        N->>A: GET /api/sensores
+        A->>N: {"temperatura": X, "humedad": Y}
+        N->>W: {"temperatura": X, "humedad": Y}
+        W->>W: Actualiza pantalla
+
+        W->>N: GET /api/led
+        N->>A: GET /api/led
+        A->>N: {"estado": true/false}
+        N->>W: {"estado": true/false}
+        W->>W: Actualiza estado del LED
+    end
+```
+
+### 3. Control de Dispositivos
+
+```mermaid
+sequenceDiagram
+    U->>W: Hace clic en "Encender LED"
+    W->>N: POST /api/led/on
+    N->>A: POST /api/led/on
+    A->>N: {"estado": true}
+    N->>W: {"estado": true}
+    W->>W: Actualiza interfaz
+```
+
+## 🛠️ Personalización y Extensión
+
+### Añadir Nuevos Sensores
+
+```cpp
+void enviarDatosSensores(EthernetClient &cliente) {
+    float temperatura = dht.readTemperature();
+    int humedad = map(analogRead(A0), 0, 1023, 0, 100);
+    int nivelLuz = analogRead(A1);
+
+    JsonDocument doc;
+    doc["temperatura"] = temperatura;
+    doc["humedad"] = humedad;
+    doc["luz"] = map(nivelLuz, 0, 1023, 0, 100);
+
+    enviarEncabezadoHTTP(cliente, "application/json");
+    serializeJson(doc, cliente);
+}
+```
+
+```html
+<!-- En el dashboard -->
+<div class="card">
+    <h2>Nivel de Luz</h2>
+    <div class="sensor-value" id="luz">--<span class="sensor-unit">%</span></div>
+</div>
+```
+
+```javascript
+function updateSensorData(data) {
+    temperaturaElement.innerHTML = `${formatSensorValue(data.temperatura)}<span class="sensor-unit">°C</span>`;
+    humedadElement.innerHTML = `${formatSensorValue(data.humedad)}<span class="sensor-unit">%</span>`;
+    document.getElementById('luz').innerHTML = `${formatSensorValue(data.luz)}<span class="sensor-unit">%</span>`;
+}
+```
+
+### Añadir Nuevos Actuadores
+
+```cpp
+else if (solicitud.indexOf("POST /api/led2/on") >= 0) {
+    digitalWrite(LED2_PIN, HIGH);
+    enviarRespuestaEstado(cliente, true);
+}
+```
