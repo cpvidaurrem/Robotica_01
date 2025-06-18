@@ -33,7 +33,7 @@ A0          → Sensor sonido KY-038
 A4          → SDA (LCD I2C)
 A5          → SCL (LCD I2C)
 ```
-
+![alt text](<Imagenes/WhatsApp Image 2025-06-18 at 09.06.50(1).jpeg>)
 ## 📁 Estructura del Proyecto
 
 ```
