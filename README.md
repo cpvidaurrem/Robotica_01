@@ -16,7 +16,7 @@ Un sistema completo de dispensado de líquido controlado por Arduino con interfa
 ### Arduino y Electrónica
 - **Arduino Uno/Nano** (compatible)
 - **Shield Ethernet** para conectividad de red
-- **Motor paso a paso NEMA 17** con driver DRV8825
+- **Motor paso a paso NEMA 23** con driver DRV8825
 - **Display LCD 16x2 I2C** (dirección 0x27)
 - **Pulsador KY-004** con resistencia pull-up
 - **Sensor de sonido KY-038** para detección de chasquidos
@@ -234,7 +234,7 @@ Este proyecto implementa un dispensador de líquido controlado a través de una 
 ### Hardware Principal
 - **Arduino Uno/Nano** (o compatible)
 - **Ethernet Shield W5100** o módulo Ethernet
-- **Motor paso a paso NEMA 17** (para el mecanismo de dispensado)
+- **Motor paso a paso NEMA 23** (para el mecanismo de dispensado)
 - **Driver DRV8825** (controlador del motor paso a paso)
 - **Pantalla LCD 16x2 con módulo I2C** (dirección 0x27)
 - **Pulsador KY-004** (o pulsador genérico)
@@ -326,7 +326,7 @@ AO (Analog Out) → Pin A0
         └──┬───┬───────┘
            │   │
      ┌─────▼───▼─────┐
-     │ Motor NEMA 17 │
+     │ Motor NEMA 23 │
      │  (4 cables)   │
      └───────────────┘
 ```
