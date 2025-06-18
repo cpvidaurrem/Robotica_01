@@ -214,8 +214,7 @@ Serial.println(soundValue);
 - [ ] **Control por voz** con reconocimiento de speech
 - [ ] **App móvil** nativa
 - [ ] **Notificaciones push** de estado
-- [ ] **Sistema de usuarios** con autenticación
-- [ ] **Integración IoT** con MQTT
+
 
 # 🔧 Guía para los componentes básicos del Circuito Dosificador con Jeringa
 
@@ -246,7 +245,7 @@ Este proyecto implementa un dispensador de líquido controlado a través de una 
 - Cables jumper macho-macho y macho-hembra
 - Protoboard o PCB para conexiones
 - Fuente de alimentación externa para el motor (12V recomendado)
-- Condensadores de desacoplo (100µF y 10µF para el driver)
+- Condensadores de desacoplo (10µF para el driver)
 
 ## Esquema de Conexiones
 
