@@ -235,95 +235,160 @@ Este proyecto implementa un sistema de dosificación precisa utilizando una jeri
 
 ## 📦 Componentes Requeridos
 
+# Dispensador de Líquido Controlado por Web
+
+Este proyecto implementa un dispensador de líquido controlado a través de una interfaz web, con activación por pulsador o sensor de sonido (chasquido).
+
+## Componentes Necesarios
+
 ### Hardware Principal
-- **Arduino Uno R3** - Microcontrolador principal con 14 pines digitales y 6 analógicos
-- **Motor Paso a Paso NEMA 17** - 200 pasos por revolución, 12V, ~1.5A por bobina
-- **Driver A4988** - Control de motor paso a paso con microstepping hasta 1/16 y protección térmica
-- **Pulsador KY-004** - Botón momentáneo de 3 pines con pull-up interno
-- **Jeringa + Mecanismo** - Jeringa de 10ml o 20ml con acoplamiento motor-émbolo
-- **Fuente de Poder** - 12V, mínimo 2A para motor y Arduino
-- **Módulo Ethernet ENC28J60** - Conectividad de red con interfaz SPI, IP fija: 192.168.10.31
+- **Arduino Uno/Nano** (o compatible)
+- **Ethernet Shield W5100** o módulo Ethernet
+- **Motor paso a paso NEMA 17** (para el mecanismo de dispensado)
+- **Driver DRV8825** (controlador del motor paso a paso)
+- **Pantalla LCD 16x2 con módulo I2C** (dirección 0x27)
+- **Pulsador KY-004** (o pulsador genérico)
+- **Sensor de sonido KY-038** (micrófono con salida analógica)
 
-### Accesorios
-- Cables jumper M-M, M-F
-- Protoboard
-- Capacitor 100μF (para driver)
-- Resistencias pull-up (10kΩ)
+### Componentes Adicionales
+- Resistencias pull-up (si no usas las internas del Arduino)
+- Cables jumper macho-macho y macho-hembra
+- Protoboard o PCB para conexiones
+- Fuente de alimentación externa para el motor (12V recomendado)
+- Condensadores de desacoplo (100µF y 10µF para el driver)
 
-## 🔗 Conexiones
+## Esquema de Conexiones
 
-### Driver A4988
-| Pin Driver | Pin Arduino | Cable | Función |
-|------------|-------------|-------|---------|
-| STEP | D2 | Azul | Pulsos para pasos |
-| DIR | D3 | Verde | Dirección del motor |
-| ENABLE | D4 | Amarillo | Habilitar/deshabilitar |
-| VDD | 5V | Rojo | Alimentación lógica |
-| GND | GND | Negro | Tierra común |
-| VMOT | Fuente 12V+ | Rojo grueso | Alimentación motor |
+### Arduino a Ethernet Shield
+```
+Ethernet Shield → Arduino
+VCC → 5V
+GND → GND
+SCK → Pin 13
+MISO → Pin 12
+MOSI → Pin 11
+CS → Pin 10 (por defecto, puede variar según shield)
+```
 
-### Pulsador KY-004
-| Pin Pulsador | Pin Arduino | Cable | Función |
-|-------------|-------------|-------|---------|
-| S | D9 | Naranja | Señal del botón |
-| VCC | 5V | Rojo | Alimentación |
-| GND | GND | Negro | Tierra |
+### Arduino a Driver DRV8825
+```
+DRV8825 → Arduino
+STEP → Pin 5
+DIR → Pin 4
+ENABLE → Pin 6
+VDD → 5V (lógica)
+GND → GND
+VMOT → 12V (fuente externa)
+GND → GND (fuente externa)
+```
 
-### Ethernet ENC28J60
-| Pin Ethernet | Pin Arduino | Cable | Función |
-|-------------|-------------|-------|---------|
-| VCC | 3.3V | Rojo | ⚠️ Importante: 3.3V |
-| GND | GND | Negro | Tierra |
-| SCK | D13 | Morado | SPI Clock |
-| MISO | D12 | Café | SPI MISO |
-| MOSI | D11 | Rosa | SPI MOSI |
-| CS | D10 | Gris | Chip Select |
+### Arduino a Motor Paso a Paso
+```
+Motor NEMA 17 → DRV8825
+A1 → 1A
+A2 → 1B  
+B1 → 2A
+B2 → 2B
+```
 
-## 📋 Esquema del Circuito
+### Arduino a Pantalla LCD I2C
+```
+LCD I2C → Arduino
+VCC → 5V
+GND → GND
+SDA → Pin A4 (Arduino Uno) / Pin SDA
+SCL → Pin A5 (Arduino Uno) / Pin SCL
+```
+
+### Arduino a Pulsador KY-004
+```
+Pulsador → Arduino
+VCC → 5V
+GND → GND
+Signal → Pin 10 (con pull-up interno habilitado)
+```
+
+### Arduino a Sensor de Sonido KY-038
+```
+Sensor KY-038 → Arduino
+VCC → 5V
+GND → GND
+AO (Analog Out) → Pin A0
+```
+
+## Diagrama de Conexión Completo
 
 ```
-┌─────────────────┐        ┌──────────────┐
-│   ARDUINO UNO   │        │   A4988      │
-│                 │        │   DRIVER     │
-│            D2 ──┼────────┼─ STEP        │
-│            D3 ──┼────────┼─ DIR         │
-│            D4 ──┼────────┼─ ENABLE      │
-│           5V ───┼────────┼─ VDD         │
-│          GND ───┼────────┼─ GND         │
-│                 │        │              │
-│          D9 ────┼──┐     │ 1A ┌─────────┼─ MOTOR
-│         5V ─────┼──│──┐  │ 1B │         │  PASO A
-│        GND ─────┼──│──│──┼─2A │ NEMA 17 │  PASO
-│                 │  │  │  │ 2B └─────────┼─ (4 hilos)
-│        3.3V ────┼──│──│──┼─ VMOT        │
-│        D10 ─────┼──│──│  │ (12V Fuente) │
-│        D11 ─────┼──│──│  └──────────────┘
-│        D12 ─────┼──│──│
-│        D13 ─────┼──│──│  ┌──────────────┐
-└─────────────────┘  │  │  │ PULSADOR     │
-                     │  │  │ KY-004       │
-                     │  └──┼─ VCC         │
-                     │     │ S ───────────┘
-                     │     │ GND
-                     │     └──┐
-                     │        │
-                     │ ┌──────┴──────────┐
-                     │ │  ETHERNET       │
-                     │ │  ENC28J60       │
-                     └─┼─ VCC            │
-                       │ GND, SCK, MISO, │
-                       │ MOSI, CS        │
-                       └─────────────────┘
-
-FUENTE DE PODER 12V/2A
-┌─────────────┐
-│    12V DC   │───┬─── VMOT (Driver A4988)
-│    POWER    │   │
-│   SUPPLY    │   └─── VIN (Arduino - Opcional)
-│             │
-│        GND  │───── GND común
-└─────────────┘
+                    ┌─────────────────┐
+                    │   Arduino Uno   │
+                    │                 │
+    ┌───────────────┤ 5V          A0  ├─────────── KY-038 (AO)
+    │               │ GND         A4  ├─────────── LCD (SDA)
+    │       ┌───────┤ Pin 4       A5  ├─────────── LCD (SCL)
+    │       │   ┌───┤ Pin 5       10  ├─────────── Pulsador (Signal)
+    │       │   │┌──┤ Pin 6           │
+    │       │   ││  │                 │
+    │       │   ││  └─────────────────┘
+    │       │   ││         │
+    │       │   ││         │ (Ethernet Shield encima)
+    │       │   ││         │
+    │   ┌───▼───▼▼─▼───┐   │
+    │   │ DRV8825      │   │
+    │   │ DIR  STEP EN │   │
+    └───┤ VDD      VMOT├───┘ 12V
+        │ GND      GND │
+        │ 1A   2A      │
+        │ 1B   2B      │
+        └──┬───┬───────┘
+           │   │
+     ┌─────▼───▼─────┐
+     │ Motor NEMA 17 │
+     │  (4 cables)   │
+     └───────────────┘
 ```
+
+
+### Acceso a la Interfaz Web
+Una vez configurado y conectado a tu red local:
+```
+http://192.168.10.31
+```
+(Usar la IP que hayas configurado)
+
+## Calibración y Ajustes
+
+### Calibración del Motor
+```cpp
+const float stepsPerMl = 20.0;  // Ajustar según calibración física
+```
+
+### Umbral del Sensor de Sonido
+```cpp
+const int soundThreshold = 50;  // Ajustar según sensibilidad deseada
+```
+
+### Dirección I2C del LCD
+```cpp
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Verificar dirección con I2C scanner
+```
+
+## Funcionamiento
+
+1. **Configuración Web**: Accede a la IP del dispositivo desde cualquier navegador
+2. **Especificación de Cantidad**: Ingresa los mL a dispensar en el formulario web
+3. **Activación**: El dispensado se activa mediante:
+   - Presión del pulsador físico, O
+   - Detección de un chasquido por el sensor de sonido
+4. **Dispensado**: El motor ejecuta el movimiento calculado
+5. **Feedback**: La pantalla LCD muestra el estado en tiempo real
+
+## Notas Importantes
+
+- **Alimentación**: El motor requiere fuente externa de 12V para funcionar correctamente
+- **Calibración**: Los `stepsPerMl` deben calibrarse físicamente con el mecanismo específico
+- **Red**: Verificar que la IP configurada esté disponible en tu red local
+- **Sensibilidad**: El umbral del sensor de sonido puede requerir ajuste según el ambiente
+
 
 ## 🔨 Instrucciones de Armado
 
@@ -401,13 +466,6 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 - Calibra STEPS_PER_ML con mediciones reales
 - Verifica que no haya burbujas de aire
 - Asegúrate de que el émbolo se mueva suavemente
-
-## 📚 Configuración de Red
-
-- **IP fija**: 192.168.10.31
-- **Protocolo**: HTTP
-- **Puerto**: 80 (estándar)
-- **Interfaz**: SPI (ENC28J60)
 
 ## 🛠️ Mantenimiento
 
