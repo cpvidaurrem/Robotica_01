@@ -33,7 +33,7 @@ A0          → Sensor sonido KY-038
 A4          → SDA (LCD I2C)
 A5          → SCL (LCD I2C)
 ```
-![alt text](<Imagenes/WhatsApp Image 2025-06-18 at 09.06.50(1).jpeg>)
+![alt text](<Imagenes/ProyectoCompleto.jpeg>)
 ## 📁 Estructura del Proyecto
 
 ```
@@ -128,6 +128,8 @@ También puedes acceder directamente al Arduino visitando su IP:
 2. **Calcular** nueva relación: `pasos_reales / ml_reales = stepsPerMl`
 3. **Actualizar** constante en el código Arduino
 
+![alt text](Imagenes/Motor.jpeg>)
+
 ### Sensor de Sonido
 1. **Monitorear** valores en Serial Monitor
 2. **Ajustar** `soundThreshold` según ambiente:
@@ -137,6 +139,7 @@ También puedes acceder directamente al Arduino visitando su IP:
 
 ## 📡 API del Sistema
 
+![alt text](Imagenes/interfaz.png>)
 ### Endpoints del Frontend
 
 #### `POST /dispense`
@@ -315,7 +318,7 @@ VCC → 5V
 GND → GND
 AO (Analog Out) → Pin A0
 ```
-
+![alt text](<Imagenes/sensores.jpeg>)
 ## Diagrama de Conexión Completo
 
 ```
