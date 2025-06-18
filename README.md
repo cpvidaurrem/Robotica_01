@@ -15,7 +15,7 @@ Un sistema completo de dispensado de líquido controlado por Arduino con interfa
 
 ### Arduino y Electrónica
 - **Arduino Uno/Nano** (compatible)
-- **Shield Ethernet W5100** para conectividad de red
+- **Shield Ethernet** para conectividad de red
 - **Motor paso a paso NEMA 17** con driver DRV8825
 - **Display LCD 16x2 I2C** (dirección 0x27)
 - **Pulsador KY-004** con resistencia pull-up
@@ -265,12 +265,6 @@ Este proyecto implementa un dispensador de líquido controlado a través de una 
 ### Arduino a Ethernet Shield
 ```
 Ethernet Shield → Arduino
-VCC → 5V
-GND → GND
-SCK → Pin 13
-MISO → Pin 12
-MOSI → Pin 11
-CS → Pin 10 (por defecto, puede variar según shield)
 ```
 
 ### Arduino a Driver DRV8825
@@ -411,7 +405,7 @@ Conecta STEP (D2), DIR (D3) y ENABLE (D4) del Arduino al driver. Estos controlan
 Conecta el módulo KY-004: VCC a 5V, GND a GND, y la señal S al pin D9 del Arduino. El código ya tiene configurado el pull-up interno.
 
 ### Paso 6: Conectar módulo Ethernet
-Conecta el ENC28J60 usando los pines SPI del Arduino. **IMPORTANTE**: Alimenta con 3.3V, no con 5V. Conecta un cable Ethernet al módulo.
+Conecta encajando el módulo sobre el Arduino. Conecta un cable Ethernet al módulo.
 
 ### Paso 7: Configurar fuente de poder
 Usa una fuente de 12V/2A mínimo. Conecta positivo a VMOT del driver y opcionalmente al VIN del Arduino. Conecta negativo al GND común de todo el circuito.
@@ -461,8 +455,7 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 - Reduce la velocidad (aumenta delayMicroseconds)
 
 ### Ethernet no conecta
-- Verifica que esté alimentado con 3.3V
-- Verifica conexiones SPI (pins 10,11,12,13)
+- Verificar que esté bien encajado sobre el arduino
 - Verifica configuración de red
 
 ### Dosificación imprecisa
@@ -476,11 +469,5 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 2. **Verificación periódica** de las conexiones eléctricas
 3. **Calibración** cuando sea necesario
 4. **Lubricación** del mecanismo motor-émbolo según uso
-
-## 📄 Licencia
-
-Este proyecto es de código abierto. Úsalo bajo tu propia responsabilidad y asegúrate de cumplir con las regulaciones locales si es para uso médico o industrial.
-
----
 
 **Nota**: Este es un proyecto educativo/experimental. Para aplicaciones críticas, consulta con profesionales especializados.
