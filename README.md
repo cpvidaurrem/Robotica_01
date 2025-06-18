@@ -415,7 +415,6 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 ## ⚠️ Advertencias Importantes
 
 ### Polaridad y Voltajes
-- El módulo Ethernet debe alimentarse con **3.3V únicamente**
 - El driver DRV8825 necesita **12V en VMOT** pero **5V en VDD**
 - Verifica polaridades antes de energizar
 
