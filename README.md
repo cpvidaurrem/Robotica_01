@@ -139,7 +139,7 @@ También puedes acceder directamente al Arduino visitando su IP:
 
 ## 📡 API del Sistema
 
-![alt text](Imagenes/interfaz.png>)
+![alt text](<Imagenes/interfaz.png>)
 ### Endpoints del Frontend
 
 #### `POST /dispense`
