@@ -391,7 +391,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);  // Verificar dirección con I2C scanner
 ### Paso 1: Preparar la base y estructura
 Monta la jeringa en una estructura fija (madera, acrílico o metal). El émbolo debe estar alineado con el eje del motor paso a paso. Puedes usar un acoplamiento flexible o imprimir en 3D una pieza de conexión.
 
-### Paso 2: Conectar el driver A4988
+### Paso 2: Conectar el driver DRV8825
 Coloca el driver en la protoboard. Conecta VDD y GND del driver a 5V y GND del Arduino. Conecta VMOT a la fuente de 12V. **IMPORTANTE**: Coloca un capacitor de 100μF entre VMOT y GND del driver.
 
 ### Paso 3: Conectar motor paso a paso
@@ -416,7 +416,7 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 
 ### Polaridad y Voltajes
 - El módulo Ethernet debe alimentarse con **3.3V únicamente**
-- El driver A4988 necesita **12V en VMOT** pero **5V en VDD**
+- El driver DRV8825 necesita **12V en VMOT** pero **5V en VDD**
 - Verifica polaridades antes de energizar
 
 ### Corriente del Motor
@@ -438,7 +438,7 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 - Esto compensa pequeños desalineamientos y reduce la carga mecánica
 
 ### Microstepping
-- Puedes configurar microstepping en el A4988 conectando MS1, MS2, MS3 a 5V o GND
+- Puedes configurar microstepping en el DRV8825 conectando MS1, MS2, MS3 a 5V o GND
 - Consulta la tabla del datasheet para mayor suavidad
 
 ## 🔧 Solución de Problemas de componentes
@@ -449,7 +449,7 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 - Verifica que ENABLE esté en LOW para activar
 
 ### Motor se mueve irregular
-- Ajusta el potenciómetro del driver A4988
+- Ajusta el potenciómetro del driver DRV8825
 - Verifica que la fuente tenga suficiente corriente
 - Reduce la velocidad (aumenta delayMicroseconds)
 
