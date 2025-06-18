@@ -128,7 +128,7 @@ También puedes acceder directamente al Arduino visitando su IP:
 2. **Calcular** nueva relación: `pasos_reales / ml_reales = stepsPerMl`
 3. **Actualizar** constante en el código Arduino
 
-![alt text](Imagenes/Motor.jpeg>)
+![alt text](<Imagenes/Motor.jpeg>)
 
 ### Sensor de Sonido
 1. **Monitorear** valores en Serial Monitor
