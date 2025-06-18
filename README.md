@@ -167,7 +167,7 @@ Programa cantidad a dispensar
 - **Ejemplo**: `http://192.168.10.31/?ml=15.5`
 - **Respuesta**: Página HTML con estado
 
-## 🔍 Solución de Problemas
+## 🔍 Solución de Problemas de todo el sistema
 
 ### Problemas Comunes
 
@@ -236,9 +236,8 @@ Sistema de dosificación automática basado en Arduino Uno con motor paso a paso
 
 Este proyecto implementa un sistema de dosificación precisa utilizando una jeringa controlada por un motor paso a paso NEMA 17. El sistema puede ser controlado localmente mediante un pulsador o remotamente a través de una interfaz web usando conectividad Ethernet.
 
-## 📦 Componentes Requeridos
 
-# Dispensador de Líquido Controlado por Web
+# Componentes necesarios
 
 Este proyecto implementa un dispensador de líquido controlado a través de una interfaz web, con activación por pulsador o sensor de sonido (chasquido).
 
@@ -442,7 +441,7 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 - Puedes configurar microstepping en el A4988 conectando MS1, MS2, MS3 a 5V o GND
 - Consulta la tabla del datasheet para mayor suavidad
 
-## 🔧 Solución de Problemas
+## 🔧 Solución de Problemas de componentes
 
 ### Motor no se mueve
 - Verifica conexiones STEP, DIR, ENABLE
