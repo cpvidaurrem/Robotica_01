@@ -217,17 +217,6 @@ Serial.println(soundValue);
 - [ ] **Sistema de usuarios** con autenticación
 - [ ] **Integración IoT** con MQTT
 
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. **Fork** el repositorio
-2. **Crear** una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** a la rama (`git push origin feature/AmazingFeature`)
-5. **Abrir** un Pull Request
-
-
 # 🔧 Guía para los componentes básicos del Circuito Dosificador con Jeringa
 
 Sistema de dosificación automática basado en Arduino Uno con motor paso a paso, pulsador y conectividad Ethernet.
@@ -418,9 +407,6 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 - El driver DRV8825 necesita **12V en VMOT** pero **5V en VDD**
 - Verifica polaridades antes de energizar
 
-### Corriente del Motor
-- El motor NEMA 17 puede consumir hasta 1.5A por bobina
-- Asegúrate de que tu fuente pueda suministrar al menos **3A en total**
 
 ### Seguridad
 - Si vas a dispensar líquidos, asegúrate de que sean compatibles con los materiales de la jeringa
@@ -437,7 +423,7 @@ Carga el código optimizado al Arduino. Verifica que responda en la IP 192.168.1
 - Esto compensa pequeños desalineamientos y reduce la carga mecánica
 
 ### Microstepping
-- Puedes configurar microstepping en el DRV8825 conectando MS1, MS2, MS3 a 5V o GND
+- Puedes configurar microstepping en el DRV8825
 - Consulta la tabla del datasheet para mayor suavidad
 
 ## 🔧 Solución de Problemas de componentes
